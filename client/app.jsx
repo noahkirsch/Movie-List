@@ -2,22 +2,23 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			movies: [
-			  {title: 'Mean Girls'},
-			  {title: 'Hackers'},
-			  {title: 'The Grey'},
-			  {title: 'Sunshine'},
-			  {title: 'Ex Machina'},
-			],
+			movies: [],
 			searchValue: '',
+			addValue: '',
 			noResultsMessage: null
 		};
 		this.handleSearchClick = this.handleSearchClick.bind(this);
-		this.handleChange = this.handleChange.bind(this);
+		this.handleAddClick = this.handleAddClick.bind(this);
+		this.handleSearchChange = this.handleSearchChange.bind(this);
+		this.handleAddChange = this.handleAddChange.bind(this);
 	}
 
-	handleChange(event) {
+	handleSearchChange(event) {
 		this.setState({searchValue: event.target.value});
+	}
+
+	handleAddChange(event) {
+		this.setState({addValue: event.target.value});
 	}
 
 	handleSearchClick(e) {
@@ -38,12 +39,27 @@ class App extends React.Component {
 		this.setState({movies: movies});
 	}
 
+	handleAddClick(e) {
+		e.preventDefault();
+		var movies = this.state.movies;
+		movies.push({title: this.state.addValue});
+
+		this.setState({movies: movies});
+		this.setState({addValue: ''});
+	}
+
 	render() {
 		return (
 			<div>
 				<h1>Movie List!</h1>
+
 				<form>
-      		<input type="text" placeholder="Search.." value={this.state.value} onChange={this.handleChange}></input>
+      		<input type="text" placeholder="Add a video.." value={this.state.value} onChange={this.handleAddChange}></input>
+      		<button  onClick={this.handleAddClick} type="submit"><i>Add</i></button>
+    		</form>
+
+				<form>
+      		<input type="text" placeholder="Search.." value={this.state.value} onChange={this.handleSearchChange}></input>
       		<button onClick={this.handleSearchClick} type="submit"><i>Search</i></button>
     		</form>
     		<div>{this.state.noResultsMessage !== null ? this.state.noResultsMessage : ''}</div>
