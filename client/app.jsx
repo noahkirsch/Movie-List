@@ -42,10 +42,19 @@ class App extends React.Component {
 	handleAddClick(e) {
 		e.preventDefault();
 		var movies = this.state.movies;
-		movies.push({title: this.state.addValue});
+		movies.push({
+									title: this.state.addValue,
+									year: '2108',
+									runtime: '120 min',
+									metascore: 46,
+									imdbRating: 6.2,
+								});
 
-		this.setState({movies: movies});
-		this.setState({addValue: ''});
+		this.setState({movies: movies, addValue: '', noResultsMessage: null});
+	}
+
+	apiSearch(query) {
+		
 	}
 
 	render() {
@@ -63,7 +72,15 @@ class App extends React.Component {
       		<button onClick={this.handleSearchClick} type="submit"><i>Search</i></button>
     		</form>
     		<div>{this.state.noResultsMessage !== null ? this.state.noResultsMessage : ''}</div>
-				<div> {this.state.movies.map((element) => (<div>{element.title}</div>))} </div>
+				<div> {this.state.movies.map((element) => (
+					<div className="movie">
+						<div>{element.title}</div>
+						<div>Year: {element.year}</div>
+						<div>Runtime: {element.runtime}</div>
+						<div>Metascore: {element.metascore}</div>
+						<div>imdbRating: {element.imdbRating}</div>
+					</div>
+				))} </div>
 			</div>
 		)
 	}
