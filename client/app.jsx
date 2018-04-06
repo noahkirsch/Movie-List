@@ -5,12 +5,14 @@ class App extends React.Component {
 			movies: [],
 			searchValue: '',
 			addValue: '',
-			noResultsMessage: null
+			noResultsMessage: null,
+			searchResult: []
 		};
 		this.handleSearchClick = this.handleSearchClick.bind(this);
 		this.handleAddClick = this.handleAddClick.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
 		this.handleAddChange = this.handleAddChange.bind(this);
+		this.apiSearch = this.apiSearch.bind(this);
 	}
 
 	handleSearchChange(event) {
@@ -41,20 +43,36 @@ class App extends React.Component {
 
 	handleAddClick(e) {
 		e.preventDefault();
-		var movies = this.state.movies;
-		movies.push({
-									title: this.state.addValue,
-									year: '2108',
-									runtime: '120 min',
-									metascore: 46,
-									imdbRating: 6.2,
-								});
+		this.apiSearch(this.state.addValue);
+		// console.log(apiResults);
+		// var movies = this.state.movies;
+		// movies.push({
+		// 							title: this.state.addValue,
+		// 							year: '2108',
+		// 							runtime: '120 min',
+		// 							metascore: 46,
+		// 							imdbRating: 6.2,
+		// 						});
 
-		this.setState({movies: movies, addValue: '', noResultsMessage: null});
+		// this.setState({movies: movies, addValue: '', noResultsMessage: null});
 	}
 
 	apiSearch(query) {
-		
+		return fetch('https://api.themoviedb.org/3/search/movie?api_key=07211b9edc3fc468be72ff6032437b67&language=en-US&query=' + query + '&page=1&include_adult=true')
+		.then(results => {
+			return results.json();
+		}).then(data => {
+		console.log(data);
+		var movies = this.state.movies;
+		movies.push({
+									title: data.results[0].title,
+									year: data.results[0].release_date.slice(0,4),
+									description: data.results[0].overview,
+									score: data.results[0].vote_average,
+								});
+
+		this.setState({movies: movies, addValue: '', noResultsMessage: null});
+		})
 	}
 
 	render() {
@@ -76,9 +94,8 @@ class App extends React.Component {
 					<div className="movie">
 						<div>{element.title}</div>
 						<div>Year: {element.year}</div>
-						<div>Runtime: {element.runtime}</div>
-						<div>Metascore: {element.metascore}</div>
-						<div>imdbRating: {element.imdbRating}</div>
+						<div>Description: {element.description}</div>
+						<div>Score: {element.score}</div>
 					</div>
 				))} </div>
 			</div>
